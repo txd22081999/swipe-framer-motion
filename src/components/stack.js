@@ -1,6 +1,6 @@
-import React, { useState, Children } from "react"
-import styled from "@emotion/styled"
-import { Card } from "./card"
+import React, { useState, Children, useEffect, useRef } from 'react'
+import styled from '@emotion/styled'
+import { Card } from './card'
 
 // basic default styles for container
 const Frame = styled.div`
@@ -12,8 +12,10 @@ const Frame = styled.div`
   position: relative;
 `
 
-export const Stack = ({ onVote, children, ...props }) => {
+export const Stack = ({ onVote, triggerId, children, ...props }) => {
   const [stack, setStack] = useState(Children.toArray(children))
+  const parentRef = useRef(null)
+  console.log(triggerId)
 
   // return new array with last item removed
   const pop = (array) => {
@@ -33,7 +35,7 @@ export const Stack = ({ onVote, children, ...props }) => {
 
   return (
     <>
-      <Frame {...props}>
+      <Frame {...props} ref={parentRef}>
         {stack.map((item, index) => {
           let isTop = index === stack.length - 1
           return (
@@ -41,6 +43,9 @@ export const Stack = ({ onVote, children, ...props }) => {
               drag={isTop} // Only top card is draggable
               key={item.key || index}
               onVote={(result) => handleVote(item, result)}
+              cardId={item.props.id}
+              triggerId={triggerId}
+              parentRef={parentRef}
             >
               {item}
             </Card>
